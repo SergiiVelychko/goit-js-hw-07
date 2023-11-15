@@ -1,81 +1,32 @@
-import { galleryItems } from './gallery-items.js';
-// Change code below this line
+import { galleryItems } from "./gallery-items.js";
 
 console.log(galleryItems);
 
+const galleryList = document.querySelector(".gallery");
 
-import { galleryItems } from './gallery-items.js';
-import 'basiclightbox/dist/basicLightbox.min.css';
-import * as basicLightbox from 'basiclightbox';
+const createGalleryItem = ({ preview, original, description }) => {
+  const galleryItem = document.createElement("li");
+  galleryItem.classList.add("gallery__item");
 
-// Получаем ссылку на элемент ul.gallery
-const galleryContainer = document.querySelector('.gallery');
+  const galleryLink = document.createElement("a");
+  galleryLink.classList.add("gallery__link");
+  galleryLink.href = original;
 
-// Создаем разметку галереи
-const galleryMarkup = createGalleryMarkup(galleryItems);
+  const galleryImage = document.createElement("img");
+  galleryImage.classList.add("gallery__image");
+  galleryImage.src = preview;
+  galleryImage.alt = description;
+  galleryImage.setAttribute("data-source", original);
 
-// Рендерим разметку внутрь ul.gallery
-galleryContainer.insertAdjacentHTML('beforeend', galleryMarkup);
+  galleryLink.appendChild(galleryImage);
+  galleryItem.appendChild(galleryLink);
 
-// Добавляем слушатель события клика на ul.gallery
-galleryContainer.addEventListener('click', onGalleryItemClick);
+  return galleryItem;
+};
 
-// Функция создания разметки галереи
-function createGalleryMarkup(items) {
-    return items
-      .map(({ preview, original, description }) => {
-        return `
-          <li class="gallery__item">
-            <a class="gallery__link" href="${original}">
-              <img
-                class="gallery__image"
-                src="${preview}"
-                data-source="${original}"
-                alt="${description}"
-              />
-            </a>
-          </li>
-        `;
-      })
-      .join('');
-  }
-  
-  // Функция обработки клика по элементу галереи
-  function onGalleryItemClick(event) {
-    event.preventDefault();
-  
-    // Проверяем, что клик произошел именно на изображении
-    const isImageElement = event.target.classList.contains('gallery__image');
-  
-    if (!isImageElement) {
-      return;
-    }
-  
-    // Получаем значение атрибута data-source изображения
-    const largeImageUrl = event.target.dataset.source;
-  
-    // Создаем экземпляр модального окна с изображением
-    const instance = basicLightbox.create(`
-      <img src="${largeImageUrl}" width="800" height="600">
-  `);
-  
-    // Открываем модальное окно
-    instance.show();
-  
-    // Добавляем слушатель события закрытия модального окна по клавише Escape
-    window.addEventListener('keydown', onKeyPress);
-  
-    // Функция закрытия модального окна по клавише Escape
-    function onKeyPress(event) {
-      if (event.code === 'Escape') {
-        instance.close();
-        window.removeEventListener('keydown', onKeyPress);
-      }
-    }
-  }
- 
-  
-  
-  
-  
-  
+const renderGallery = (items) => {
+  const galleryMarkup = items.map(createGalleryItem);
+  galleryList.append(...galleryMarkup);
+};
+
+renderGallery(galleryItems);
