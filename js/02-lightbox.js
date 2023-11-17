@@ -1,33 +1,27 @@
 import { galleryItems } from "./gallery-items.js";
-import SimpleLightbox from "https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.2/simple-lightbox.min.js";
-import "https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.2/simple-lightbox.min.css";
 
 console.log(galleryItems);
 
 const galleryList = document.querySelector(".gallery");
 
-const createGalleryItem = ({ preview, original, description }) => {
-  const galleryItem = document.createElement("li");
-  galleryItem.classList.add("gallery__item");
-
-  const galleryLink = document.createElement("a");
-  galleryLink.classList.add("gallery__link");
-  galleryLink.href = original;
-
-  const galleryImage = document.createElement("img");
-  galleryImage.classList.add("gallery__image");
-  galleryImage.src = preview;
-  galleryImage.alt = description;
-
-  galleryLink.appendChild(galleryImage);
-  galleryItem.appendChild(galleryLink);
-
-  return galleryItem;
-};
+const createGalleryItem = ({
+  preview,
+  original,
+  description,
+}) => `<li class="gallery__item">
+<a class="gallery__link" href="${original}">
+  <img
+    class="gallery__image"
+    src="${preview}"
+    alt="${description}"
+  />
+</a>
+</li>
+`;
 
 const renderGallery = (items) => {
-  const galleryMarkup = items.map(createGalleryItem);
-  galleryList.append(...galleryMarkup);
+  const galleryMarkup = items.map(createGalleryItem).join("");
+  galleryList.insertAdjacentHTML("beforeend", galleryMarkup);
 };
 
 renderGallery(galleryItems);

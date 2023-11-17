@@ -5,28 +5,31 @@ console.log(galleryItems);
 const galleryList = document.querySelector(".gallery");
 
 const createGalleryItem = ({ preview, original, description }) => {
-  const galleryItem = document.createElement("li");
-  galleryItem.classList.add("gallery__item");
-
-  const galleryLink = document.createElement("a");
-  galleryLink.classList.add("gallery__link");
-  galleryLink.href = original;
-
-  const galleryImage = document.createElement("img");
-  galleryImage.classList.add("gallery__image");
-  galleryImage.src = preview;
-  galleryImage.alt = description;
-  galleryImage.setAttribute("data-source", original);
-
-  galleryLink.appendChild(galleryImage);
-  galleryItem.appendChild(galleryLink);
-
-  return galleryItem;
+  return `<li class="gallery__item">
+    <a class="gallery__link" href="${original}">
+      <img class="gallery__image" src="${preview}" data-source="${original}" alt="${description}" />
+    </a>
+  </li>`;
 };
 
 const renderGallery = (items) => {
-  const galleryMarkup = items.map(createGalleryItem);
-  galleryList.append(...galleryMarkup);
+  const galleryMarkup = items.map(createGalleryItem).join("");
+  galleryList.insertAdjacentHTML("beforeend", galleryMarkup);
 };
 
 renderGallery(galleryItems);
+
+galleryList.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const targetImage = event.target;
+  if (targetImage.classList.contains("gallery__image")) {
+    const largeImageURL = targetImage.dataset.source;
+
+    const instance = basicLightbox.create(`
+      <img src="${largeImageURL}" width="800" height="600">
+    `);
+
+    instance.show();
+  }
+});
